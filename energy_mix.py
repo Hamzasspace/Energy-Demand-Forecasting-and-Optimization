@@ -3,6 +3,7 @@ import csv
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from itertools import combinations
 
 # reading the csv file:
 df = pd.read_csv('dataset.csv')
@@ -75,7 +76,6 @@ plt.figure(figsize=(8, 6)) # Creating a new figure for the plots
 for i, energy_source in enumerate(columns_for_correlation[1:]): #adding an index to each energy source with skipping the first column 
     plt.subplot(2, 4, i+1) # deviding the figure into a grid of subplots and specifies where the current plot should be placed
     sns.scatterplot(data=df, x=energy_source, y='greenhouse_gas_emissions') # create a scazzer plot usisng seaborn
-    plt.title(f"CO₂ Emissions vs {energy_source.capitalize().replace('_', ' ')}") #capitalizing the first letter  of the energy source name and replacing '_' with spaces
     plt.xlabel(energy_source.replace('_share_energy', ' Share'))#modifing the column name 
     plt.ylabel("CO₂ Emissions")
 plt.tight_layout() # function for adjusting the spacing between the subplots in the figure
@@ -85,8 +85,29 @@ plt.figure(figsize=(4, 2))
 sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", center=0) #annot:cells with numerical correlation values, cmap: for the color, 0 as a center of the colore scare
 plt.title("Correlation Matrix: CO₂ Emissions and Energy Mix Shares")
 
-# Creating Pairplot for Pairwise Relationships:
-sns.pairplot(df[columns_for_correlation], kind='reg', diag_kind='kde', height=1)#reg:adds regression lines to the scatter plots showing trends in the relationships between variables. kde:Kernel Density Estimation:visualize the distribution of each variable.
-plt.suptitle("Pairwise Relationships between CO₂ Emissions and Energy Mix Shares", y=1.02)
+# Initialize the number of plots per page
+plots_per_page = 3
 
-plt.show()
+# Iterate through the variables in chunks of 3
+for i in range(0, len(columns_for_correlation), plots_per_page):
+    # Define the subset of columns for this page
+    subset = columns_for_correlation[i:i + plots_per_page]
+    
+    # Create a figure for the current page
+    plt.figure(figsize=(10, 12))
+    
+    for j, energy_source in enumerate(subset):
+        plt.subplot(len(subset), 1, j + 1)  # Subplots stacked vertically
+        sns.regplot(data=df, x=energy_source, y='greenhouse_gas_emissions', 
+                    scatter_kws={'alpha': 0.6}, line_kws={'color': 'red'})
+        
+        # Set titles and labels for better readability
+        plt.title(f"CO₂ Emissions vs {energy_source.replace('_share_energy', '').capitalize()}", fontsize=14)
+        plt.xlabel(energy_source.replace('_share_energy', '').capitalize(), fontsize=12)
+        plt.ylabel("CO₂ Emissions", fontsize=12)
+    
+    # Adjust layout to avoid overlap
+    plt.tight_layout()
+    
+    # Display the current page of plots
+    plt.show()
