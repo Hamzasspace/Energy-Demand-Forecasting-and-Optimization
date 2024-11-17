@@ -108,6 +108,3 @@ for i in range(0, len(columns_for_correlation), plots_per_page):
     
     # Adjust layout to avoid overlap
     plt.tight_layout()
-    
-    # Display the current page of plots
-    plt.show()
