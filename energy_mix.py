@@ -69,18 +69,21 @@ columns_for_correlation = ['greenhouse_gas_emissions', 'fossil_share_energy',
                            'solar_share_energy', 'wind_share_energy']
 # Calculate correlation matrix
 correlation_matrix = df[columns_for_correlation].corr()
+
 # Scatter plots to visualize relationships with CO₂ emissions
-
-plt.figure(figsize=(8, 6))
-for i, energy_source in enumerate(columns_for_correlation[1:]):
-    plt.subplot(2, 4, i+1)
-    sns.scatterplot(data=df, x=energy_source, y='greenhouse_gas_emissions')
-    plt.title(f"CO₂ Emissions vs {energy_source.capitalize().replace('_', ' ')}")
-    plt.xlabel(energy_source.replace('_share_energy', ' Share'))
+plt.figure(figsize=(8, 6)) # Creating a new figure for the plots
+for i, energy_source in enumerate(columns_for_correlation[1:]): #adding an index to each energy source with skipping the first column 
+    plt.subplot(2, 4, i+1) # deviding the figure into a grid of subplots and specifies where the current plot should be placed
+    sns.scatterplot(data=df, x=energy_source, y='greenhouse_gas_emissions') # create a scazzer plot usisng seaborn
+    plt.title(f"CO₂ Emissions vs {energy_source.capitalize().replace('_', ' ')}") #capitalizing the first letter  of the energy source name and replacing '_' with spaces
+    plt.xlabel(energy_source.replace('_share_energy', ' Share'))#modifing the column name 
     plt.ylabel("CO₂ Emissions")
-
-plt.tight_layout()
+plt.tight_layout() #function for adjusting the spacing between the subplots in the figure
 
 plt.figure(figsize=(4, 2))
 sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", center=0)
 plt.title("Correlation Matrix: CO₂ Emissions and Energy Mix Shares")
+
+sns.pairplot(df[columns_for_correlation], kind='reg', diag_kind='kde', height=2.5)
+plt.suptitle("Pairwise Relationships between CO₂ Emissions and Energy Mix Shares", y=1.02)
+
