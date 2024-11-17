@@ -78,12 +78,15 @@ for i, energy_source in enumerate(columns_for_correlation[1:]): #adding an index
     plt.title(f"CO₂ Emissions vs {energy_source.capitalize().replace('_', ' ')}") #capitalizing the first letter  of the energy source name and replacing '_' with spaces
     plt.xlabel(energy_source.replace('_share_energy', ' Share'))#modifing the column name 
     plt.ylabel("CO₂ Emissions")
-plt.tight_layout() #function for adjusting the spacing between the subplots in the figure
+plt.tight_layout() # function for adjusting the spacing between the subplots in the figure
 
+# Creating Correlation Matrix Heatmap:
 plt.figure(figsize=(4, 2))
-sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", center=0)
+sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", center=0) #annot:cells with numerical correlation values, cmap: for the color, 0 as a center of the colore scare
 plt.title("Correlation Matrix: CO₂ Emissions and Energy Mix Shares")
 
-sns.pairplot(df[columns_for_correlation], kind='reg', diag_kind='kde', height=2.5)
+# Creating Pairplot for Pairwise Relationships:
+sns.pairplot(df[columns_for_correlation], kind='reg', diag_kind='kde', height=1)#reg:adds regression lines to the scatter plots showing trends in the relationships between variables. kde:Kernel Density Estimation:visualize the distribution of each variable.
 plt.suptitle("Pairwise Relationships between CO₂ Emissions and Energy Mix Shares", y=1.02)
 
+plt.show()
